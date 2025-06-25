@@ -10,6 +10,13 @@ function main() {
   station(data);
 }
 
+function isSafari() {
+  const ua = navigator.userAgent;
+
+  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+  return isSafari;
+}
+
 function addevent() {
   const textareas = document.querySelectorAll('.inputarea');
   textareas.forEach(area => {
@@ -507,8 +514,14 @@ function stationname(x, y, nameja, nameen, num) {
   const namejalen = namejaWidth / 33.8667
   
   if (namejaWidth > 170) {
+    if (isSafari()) {
+      namejaAttrs.textLength = (33.8667 * 5 / namejalen) + "px";
+    } else {
+      namejaAttrs.textLength = (33.8667 * 5) + "px";
+    }
+    
     console.log(33.8667 * 5 / nameja.length);
-    namejaAttrs.textLength = (33.8667 * 5) + "px";
+    
     namejaAttrs.lengthAdjust = "spacingAndGlyphs";
     namejaAttrs.skipy = 33.8667 * 5 / namejalen;
   } else {
