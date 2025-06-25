@@ -1,4 +1,4 @@
-// easy_rosenzu/script.js - v0.3.5
+// easy_rosenzu/script.js - v0.3.6
 // easy_rosenzuは、駅の名前や種別を入力することで、snapsvgを使用して路線図を自動で描画するサイトです。
 
 
@@ -33,8 +33,7 @@ function addevent() {
 
   const svgbutton = document.getElementById("svgbutton");
   svgbutton.addEventListener("click", () => {
-    const data = getdatafromtextarea();
-    downloadSvg(data);
+    downloadSvg(kuTetsuToRosenzu);
   });
 
   const bookmarklet =document.getElementById("bookmarklet");
