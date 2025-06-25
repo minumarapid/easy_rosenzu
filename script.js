@@ -486,6 +486,7 @@ function stationname(x, y, nameja, nameen, num) {
     textAnchor: "left",
     "writing-mode": "vertical-rl",
     skipx: 0,
+    skipy: 33.8667
   };
 
   let nameenAttrs = {
