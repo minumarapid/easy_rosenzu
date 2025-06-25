@@ -486,7 +486,6 @@ function stationname(x, y, nameja, nameen, num) {
     textAnchor: "left",
     "writing-mode": "vertical-rl",
     skipx: 0,
-    skipy: 33.8667
   };
 
   let nameenAttrs = {
@@ -505,15 +504,15 @@ function stationname(x, y, nameja, nameen, num) {
   const namejaWidth = textboxsize(nameja,namejaAttrs)
   const nameenWidth = textboxsize(nameen,nameenAttrs)
   const stanumWidth = textboxsize(num, stanumAttrs)
-  
+  const namejalen = namejaWidth / 33.8667
   
   if (namejaWidth > 170) {
     console.log(33.8667 * 5 / nameja.length);
     namejaAttrs.textLength = (33.8667 * 5) + "px";
     namejaAttrs.lengthAdjust = "spacingAndGlyphs";
-    skipy = 33.8667 * 5 / nameja.length;
+    namejaAttrs.skipy = 33.8667 * 5 / namejalen;
   } else {
-    skipy = 33.8667
+    namejaAttrs.skipy = 33.8667
   }
   
   // 170px以上なら縮める
