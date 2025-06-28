@@ -37,8 +37,9 @@ function addevent() {
   });
 
   const bookmarklet =document.getElementById("bookmarklet");
+  bookmarklet.href = kuTetsuToRosenzu;
   bookmarklet.addEventListener("click", () => {
-    navigator.clipboard.writeText(kuTetsuToRosenzu);
+    navigator.clipboard.writeText(kuTetsuToRosenzu.replace("\"","\\\"").replace("\"","\\\""));
   });
 }
 
