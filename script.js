@@ -36,11 +36,11 @@ function addevent() {
     downloadSvg(kuTetsuToRosenzu);
   });
 
-  /*const bookmarklet =document.getElementById("bookmarklet");
+  const bookmarklet =document.getElementById("bookmarklet");
   bookmarklet.href = kuTetsuToRosenzu;
   bookmarklet.addEventListener("click", () => {
     navigator.clipboard.writeText(kuTetsuToRosenzu);
-  });*/
+  });
 }
 
 function error(str){
