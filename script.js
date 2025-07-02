@@ -10,12 +10,6 @@ function main() {
   typecolorformcreate(data);
   station(data);
   sessionStorage.editdata = editdata;
-  window.addEventListener("beforeunload", (event) => {
-    // Cancel the event as stated by the standard.
-    event.preventDefault();
-    // Chrome requires returnValue to be set.
-    event.returnValue = "";
-  });
 }
 
 function isSafari() {
@@ -31,6 +25,13 @@ function addevent() {
     area.addEventListener('input',() => {
       main();
     });
+  });
+
+  window.addEventListener("beforeunload", (event) => {
+    // Cancel the event as stated by the standard.
+    event.preventDefault();
+    // Chrome requires returnValue to be set.
+    event.returnValue = "";
   });
 
   const pngbutton = document.getElementById("pngbutton");
