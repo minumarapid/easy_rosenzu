@@ -20,18 +20,16 @@ function isSafari() {
 }
 
 function addevent() {
+  window.addEventListener("beforeunload", (event) => {
+    event.preventDefault();
+    event.returnValue = "";
+  });
+
   const textareas = document.querySelectorAll('.inputarea');
   textareas.forEach(area => {
     area.addEventListener('input',() => {
       main();
     });
-  });
-
-  window.addEventListener("beforeunload", (event) => {
-    // Cancel the event as stated by the standard.
-    event.preventDefault();
-    // Chrome requires returnValue to be set.
-    event.returnValue = "";
   });
 
   const pngbutton = document.getElementById("pngbutton");
