@@ -195,10 +195,28 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive">
-                  プラグイン
+                  エクスポート・インポート
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" data-bs-parent="#inputform">
+                <div class="accordion-body">
+                  <div class="d-grid gap-2">
+                    <button id="exportbutton" class="btn btn-outline-primary text-nowrap">エクスポート</button>
+                    <div class="input-group">
+                      <input class="form-control" type="file" id="formFile">
+                      <button id="importbutton" class="btn btn-outline-secondary" type="button">インポート</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseSix" aria-expanded="false" aria-controls="panelsStayOpen-collapseSix">
+                  プラグイン
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseSix" class="accordion-collapse collapse" data-bs-parent="#inputform">
                 <div class="accordion-body">
                   <div class="d-grid gap-2">
                     <a class="btn btn-outline-primary text-nowrap" id="bookmarklet">空想鉄道からインポート</a>
@@ -228,6 +246,7 @@
 
     <script src="ku-tetsu_to_rosenzu.js"></script>
     <script src="download.js"></script>
+    <script src="export.js"></script>
     <script src="fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
     <script src="snap.snip.js"></script>

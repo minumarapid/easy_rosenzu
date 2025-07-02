@@ -20,6 +20,23 @@ function downloadSvg(data) {
   URL.revokeObjectURL(svgUrl);
 }
 
+function downloadJson(json,data) {
+  const linename = data[6].split('/').join('_').split(' ').join('_')
+
+  const jsonBlob = new Blob([json], { type: 'application/json' });
+  const Url = URL.createObjectURL(jsonBlob);
+  const timestamp = new Date().toISOString().replace(/[-:T]/g, "").split(".")[0];  
+  const a = document.createElement('a');
+  a.href = Url;
+  a.download = `${linename}_${timestamp}.json`;
+
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(Url);
+}
+
 function downloadPng(data) {
   const container = document.getElementById("container");
   const svgElement = container.querySelector("svg");

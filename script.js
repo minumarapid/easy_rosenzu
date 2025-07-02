@@ -1,13 +1,15 @@
-// easy_rosenzu/script.js - v0.3.6
+// easy_rosenzu/script.js - v0.3.7
 // 簡易路線図ジェネレータは、駅の名前や種別を入力することで、snapsvgを使用して路線図を自動で描画するサイトです。
 
 
 function main() {
   //TODO: mainの関数。実行順に関数を実行する。 ]
   const data = getdatafromtextarea();
+  const editdata = exportJson();
   stopscheckboxcreate(data);
   typecolorformcreate(data);
   station(data);
+  sessionStorage.editdata = editdata;
 }
 
 function isSafari() {
@@ -33,10 +35,35 @@ function addevent() {
 
   const svgbutton = document.getElementById("svgbutton");
   svgbutton.addEventListener("click", () => {
-    downloadSvg(kuTetsuToRosenzu);
+    const data = getdatafromtextarea();
+    downloadSvg(data);
   });
 
-  const bookmarklet =document.getElementById("bookmarklet");
+  const exportbutton = document.getElementById("exportbutton");
+  exportbutton.addEventListener("click", () => {
+    const data = getdatafromtextarea();
+    const object = exportJson();
+    downloadJson(object,data)
+  });
+
+  const importbutton = document.getElementById("importbutton");
+  document.querySelector('#formFile').addEventListener('change', e => {
+    if (e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = e => {
+        importbutton.addEventListener("click", () => {
+          pushJson(e.target.result);
+        });
+      };
+      // BlobまたはFileをテキストとして読み込む
+      // 第2引数にencodingを指定可能、
+      // 指定しない場合はUTF8として読み込み
+      reader.readAsText(file);
+    }
+  });
+
+  const bookmarklet = document.getElementById("bookmarklet");
   bookmarklet.href = kuTetsuToRosenzu;
   bookmarklet.addEventListener("click", () => {
     navigator.clipboard.writeText(kuTetsuToRosenzu);
@@ -480,7 +507,7 @@ function linepath(x,y,color) {
 }
 
 function stationstoptrain(x, y, color, stops) {
-  //停車駅を表す四角のSVGを生成する。停車駅等の変数生成の仕組みが整い次第すぐ作れると思う。
+  //停車駅を表す四角のSVGを生成する。
   if (stops === false) {
     return;
   }
@@ -565,74 +592,82 @@ async function get(url) {
   }
 }
 
-async function getdatafromurl() {
-    // 文字列としてURLを取得する。
-  const url_string = window.location.href;
-  // 文字列としてのURLをURLオブジェクトに変換する。
-  const url = new URL(url_string);
+function rgbaToHex(rgba) {
+  const match = rgba.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+  if (match) {
+    const r = parseInt(match[1]);
+    const g = parseInt(match[2]);
+    const b = parseInt(match[3]);
+    const a = match[4] ? parseFloat(match[4]) : 1;
 
-  const rawstaname = url.searchParams.get("staname")
-  const linename = url.searchParams.get("linename");
-  const linemark = url.searchParams.get("linemark");
+    const toHex = (c) => {
+      const hex = c.toString(16);
+      return hex.length === 1 ? "0" + hex : hex;
+    };
 
-  if (rawstaname !== null || linename !== null || linemark !== null){
+    return "#" + toHex(r) + toHex(g) + toHex(b);
+  }
+  return rgba; // 無効な入力の場合は元の値を返す
+}
 
-    let staname
+async function getdatafromurl(staname,linename,linemark,rawlinecolor) {
 
-    if (rawstaname !== null) {
-      staname = rawstaname.split(',').join('\n')
-    }
+    const linecolor = rgbaToHex(rawlinecolor);
+
 
     const linenameen = await get(`https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/exec?text=${linename}&source=ja&target=en`);
-    const rawstanameen = await get(`https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/exec?text=${rawstaname}&source=ja&target=en`);
-  
-    let stanameen
+    const stanameen = await get(`https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/exec?text=${staname}&source=ja&target=en`);
 
-    if (staname !== null) {
-      stanameen = rawstanameen.split(', ').join('\n')
-    }
 
-    console.log(staname,linename,linemark,stanameen,linenameen);
 
-    const linenametextarea = document.getElementById("linenameja")
-    const stanametextarea = document.getElementById("stationnameja")
-    const linemarktextarea = document.getElementById("number")
-    const linenameenarea = document.getElementById("linenameen")
-    const stanameenarea = document.getElementById("stationnameen")
+    console.log(staname,linename,linemark,stanameen,linenameen,linecolor);
 
-    if (linenametextarea.value == ""){
-      linenametextarea.value = linename;
-    }
+    const stops = (() => {
+      const data = [];
+      for(let i = 0; i < staname.split(",").length; i++){
+        data.push([true])
+      }
+      return data
+    })();
+    console.log(stops)
 
-    if (stanametextarea.value == ""){
-      stanametextarea.value = staname;
-    }  
-
-    if (linemarktextarea.value == ""){
-      linemarktextarea.value = linemark;
-    }
-
-    if (linenameenarea.value == ""){
-      linenameenarea.value = linenameen
-    }
-
-    if (stanameenarea.value == ""){
-      stanameenarea.value = stanameen
-    }
-
-    main();
-  } else {
-    return
-  }
+    const returndata = JSON.stringify({
+      "linedata" : {
+        "linenameja" : linename,
+        "linenameen" : linenameen,
+        "linemark" : linemark
+      },
+      "stadata" : {
+        "stanameja" : staname.split(","),
+        "stanameen" : stanameen.split(","),
+        "stops" : stops
+      },
+      "typedata" : {
+        "typenameja" : [""],
+        "typenameen" : [""],
+        "color" : [linecolor]
+      }
+    })
+    console.log(returndata)
+    pushJson(returndata)
 }
 
 // 乗換案内の実装予定はありません。いまのところ。
 window.onload = function onload(){
-  getdatafromurl();
-
   addevent();
   
-  console.log("easy_rosenzu/script.js v0.2.0 loaded successfully."); 
+  console.log("easy_rosenzu/script.js v0.3.7 loaded successfully."); 
 
-  main();
+  const url = new URL(window.location.href);
+  const staname = url.searchParams.get("staname")
+  const linename = url.searchParams.get("linename");
+  const linemark = url.searchParams.get("linemark");
+  const linecolor = url.searchParams.get("linecolor");
+  if (staname !== null || linename !== null || linemark !== null || linecolor !== null){
+    getdatafromurl(staname,linename,linemark,linecolor);
+  } else if(sessionStorage.getItem('editdata')){
+    pushJson(sessionStorage.getItem('editdata'))
+  } else {
+    main();
+  }
 };
