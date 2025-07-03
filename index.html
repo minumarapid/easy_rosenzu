@@ -13,6 +13,9 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="駅の名前や種別を入力するだけで簡単に路線図を生成できるツールです。">
+    <meta name="author" content="o38_minumarapid">
+    <meta name="keywords" content="路線図ジェネレータ,路線図メーカー,架空鉄道,鉄道,電車">
     
     <meta property="og:title" content="簡易路線図ジェネレータ">
     <meta property="og:type" content="website">
@@ -56,7 +59,6 @@
         document.documentElement.setAttribute("data-bs-theme", theme);
       })();
     </script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   </head>
   <body>
   <div>
@@ -114,14 +116,14 @@
                     <span class="input-group-text ">日本語路線名</span>
                     <div class="form-floating">
                       <input type="text" id="linenameja" class="form-control inputarea " placeholder="">
-                      <label for="number">路線名の日本語表記を入力してください</label>
+                      <label for="linenameja">路線名の日本語表記を入力してください</label>
                     </div>
                   </div>
                   <div class="input-group mb-3">
                     <span class="input-group-text">英語路線名</span>
                     <div class="form-floating">
                       <input type="text" id="linenameen" class="form-control inputarea"  placeholder="">
-                      <label for="number">路線名の英語表記を入力してください</label>
+                      <label for="linenameen">路線名の英語表記を入力してください</label>
                     </div>
                   </div>
                   <div class="input-group">
@@ -201,8 +203,9 @@
               <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" data-bs-parent="#inputform">
                 <div class="accordion-body">
                   <div class="d-grid gap-2">
-                    <button id="exportbutton" class="btn btn-outline-primary text-nowrap">エクスポート</button>
+                    <button id="exportbutton" class="btn btn-outline-primary text-nowrap">jsonにエクスポート</button>
                     <div class="input-group">
+                      <label class="d-none" for="formFile">jsonからインポート</label>
                       <input class="form-control" type="file" id="formFile">
                       <button id="importbutton" class="btn btn-outline-secondary" type="button">インポート</button>
                     </div>
