@@ -69,9 +69,11 @@ function addevent() {
   });
 
   const bookmarklet = document.getElementById("bookmarklet");
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'))
   bookmarklet.href = kuTetsuToRosenzu;
   bookmarklet.addEventListener("click", () => {
     navigator.clipboard.writeText(kuTetsuToRosenzu);
+    toastBootstrap.show()
   });
 }
 

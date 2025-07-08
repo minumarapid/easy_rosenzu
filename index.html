@@ -27,7 +27,6 @@
     <link rel="icon" href="/image/favicon.ico">
     <title>簡易路線図ジェネレータ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
       @import url('https://fonts.googleapis.com/css2?family=M+PLUS+2&family=Montserrat:ital@0;1&display=swap');
       /*@import url('https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@500&family=Montserrat:ital,wght@0,500;1,500&display=swap');*/
@@ -246,6 +245,20 @@
         </div>
       </footer>
     </div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <img src="..." class="rounded me-2" alt="...">
+          <strong class="me-auto">簡易路線図ジェネレータ</strong>
+          <small></small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          コードをクリップボードにコピーしました。
+        </div>
+      </div>
+    </div>
+
 
     <script src="ku-tetsu_to_rosenzu.js"></script>
     <script src="download.js"></script>
