@@ -1,11 +1,10 @@
-// easy_rosenzu/script.js - v0.3.7
+// easy_rosenzu/script.js - v0.4.0
 // 簡易路線図ジェネレータは、駅の名前や種別を入力することで、snapsvgを使用して路線図を自動で描画するサイトです。
-
-
 function main() {
   //TODO: mainの関数。実行順に関数を実行する。 ]
   const data = getdatafromtextarea();
   const editdata = exportJson();
+  setupStationNameSelect();
   stopscheckboxcreate(data);
   typecolorformcreate(data);
   station(data);
@@ -20,17 +19,13 @@ function isSafari() {
 }
 
 function addevent() {
-  window.addEventListener("beforeunload", (event) => {
-    event.preventDefault();
-    event.returnValue = "";
-  });
-
   const textareas = document.querySelectorAll('.inputarea');
   textareas.forEach(area => {
     area.addEventListener('input',() => {
       main();
     });
   });
+
 
   const pngbutton = document.getElementById("pngbutton");
   pngbutton.addEventListener("click", () => { 
@@ -44,6 +39,12 @@ function addevent() {
     downloadSvg(data);
   });
 
+  const addchangebtn = document.getElementById("addchange");
+  addchangebtn.addEventListener("click", () => {
+    addChangeList();
+    main();
+  });
+  
   const exportbutton = document.getElementById("exportbutton");
   exportbutton.addEventListener("click", () => {
     const data = getdatafromtextarea();
@@ -241,6 +242,88 @@ function typecolorformcreate(data) {
   });
 }
 
+function setupStationNameSelect(){
+  const data = getdatafromtextarea();
+  const element = document.getElementById("changesta")
+  element.innerHTML = "";
+  for(let i = 0; i < data[0].length; i++){
+    const option = document.createElement("option");
+    option.text = data[0][i];
+    option.value = [i];
+    element.appendChild(option);
+  }
+}
+
+function addChangeList(){
+  const timestamp = new Date().toISOString().replace(/[-:T]/g, "").split(".")[0];
+  const addList = document.getElementById("addList")
+  const inp = {
+    "element" : [document.getElementById("changesta"),document.getElementById("changecolor"),document.getElementById("changenameja"),document.getElementById("changenameen")],
+    "id" : ["changesta_","changecolor_","changenameja_","changenameen_"]
+  }
+  const tr = document.createElement("tr")
+  tr.id = timestamp
+  addList.appendChild(tr)
+  for(let i = 0; i < 5 ;i++){
+    console.log(i)
+    const th = document.createElement("th")
+    tr.appendChild(th)
+    if(i == 0){
+      const select = document.createElement("select");
+      select.innerHTML = inp.element[i].innerHTML;
+      select.id = `${inp.id[i]}${timestamp}`
+      select.className =`form-control ${inp.id[i]}`
+      select.value = inp.element[i].value
+      select.addEventListener("change",() => {
+        main();
+      });
+      th.appendChild(select)
+    }else if(i < 4){
+      const input = document.createElement("input");
+      if(i == 1){
+        input.type = "color"
+      } else {
+        input.type = "text"
+      }
+      input.id = `${inp.id[i]}${timestamp}`
+      input.value = inp.element[i].value
+      input.className = `form-control ${inp.id[i]}`
+      input.addEventListener("input",() => {
+        main();
+      });
+      th.appendChild(input)
+    }else{
+      const button = document.createElement("button")
+      button.id = `delete_${timestamp}`
+      button.innerHTML = "削除"
+      button.className = `btn btn-outline-danger w-100 text-nowrap`
+      button.onclick = () => {
+        document.getElementById(timestamp).remove();
+        main();
+      }
+      th.appendChild(button)
+      return
+    }
+  }
+}
+
+function getChangeData() {
+  const className = ["changesta","changecolor","changenameja","changenameen"]
+  const returndata = {
+    "changesta" : [],
+    "changecolor" : [],
+    "changenameja" : [],
+    "changenameen" : []
+  }
+  for(let i = 0; i < 4; i++){
+    const elements = document.querySelectorAll(`.${className[i]}_`);
+    elements.forEach(element => {
+      returndata[className[i]].push(element.value)
+    })
+  }
+  return returndata
+}
+
 // 改行区切り関数 テキストエリアに入力されたものをデータに変換する際に利用する
 function splitinputdata(input) {
   return input.split("\n");
@@ -318,6 +401,27 @@ function insertFontStyle(svgElement, base64Font1, fontFamilyName1, base64Font2, 
     svgElement.insertBefore(style, firstChild);
 }
 
+function createChangeData(data){
+  const ChangeData = getChangeData();
+  const returnData = [];
+  for(let i = 0; i < data[0].length; i++){
+    const data = {
+      "color" : [],
+      "ja" : [],
+      "en" : []
+    }
+    for(let j = 0; j < ChangeData.changesta.length; j++){
+      if(ChangeData.changesta[j] == i.toString()){
+        data.color.push(ChangeData.changecolor[j])
+        data.ja.push(ChangeData.changenameja[j])
+        data.en.push(ChangeData.changenameen[j])
+      }
+    }
+    returnData.push(data)
+  }
+  return returnData
+};
+
 function stationdatacreate(data) {
   //駅データを作成する関数
   
@@ -326,6 +430,7 @@ function stationdatacreate(data) {
   const typejadata = data[2];
   const typeendata = data[3];
   const stopsdata = getstopsdata(data);
+  const changeData = createChangeData(data);
 
   if (namejadata.length !== nameendata.length || typejadata.length !== typeendata.length) {
     console.error("Error");
@@ -348,7 +453,9 @@ function stationdatacreate(data) {
     if (document.getElementById("number").value === "") {
       numdata[i] = numi(i);
     }
-  } 
+  }
+  
+
 
   let stationdata = [];
   for (let i = 0; i < namejadata.length; i++) {
@@ -357,6 +464,7 @@ function stationdatacreate(data) {
       nameen: nameendata[i],
       num: numdata[i],
       stops: stopsdata[i],
+      changes: changeData[i]
     };
   }
   console.log(stationdata);
@@ -399,11 +507,18 @@ function station(data) {
   const stationlength = stationdata.length;
   const typelength = typedata.length;
   console.log(stationlength, typelength);
+  const maxChanges = (() => {
+    const a = [];
+    for(let i = 0; i < stationdata.length; i++){
+      a.push(stationdata[i].changes.color.length)
+    }
+    return(a.reduce((a, b) => Math.max(a, b), -Infinity));
+  })();
   // 計算：サイズ
   const cellWidth = 70;
   const cellHeight = 30;
   const svgWidth = stationlength * cellWidth + 95;//95は凡例部分の分
-  const svgHeight = (typelength + 10) * cellHeight; // +12.5は駅名表示領域の分
+  const svgHeight = ((typelength + 10) * cellHeight) + (18 * maxChanges); // +10は駅名表示領域の分
   
   // SVG初期化
   const svg = Snap.parse(`<svg id="svg_main" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}" xmlns="http://www.w3.org/2000/svg"></svg>`);
@@ -411,6 +526,8 @@ function station(data) {
   
   //ここで駅の座標を確定しstationname関数とstationstoptrain関数に渡す。
   linename(5,40,linenameja,linenameen)
+  
+  const paper = Snap("#svg_main");
 
   for (let i = 0; i < stationdata.length; i++) {
     let x = 95 + i * 70; // X座標を70ずつずらす
@@ -419,6 +536,7 @@ function station(data) {
     let nameen = stationdata[i].nameen;
     let num = stationdata[i].num;
     let stops = stationdata[i].stops;
+    let changes = stationdata[i].changes;
     for (let j = 0; j < typelength; j++) {  
       let nj = j + 1
       let ny = nj * -30 + y;
@@ -435,6 +553,14 @@ function station(data) {
       stationstoptrain(x, ny, color, stops[j]);
     }
     stationname(x, y - 2, nameja, nameen, num);
+    if(0 < stationdata[i].changes.color.length){
+      paper.rect(x, y -3, 1, 195)
+      .attr({fill: "#000000"});
+    }
+    for(let j = 0; j < stationdata[i].changes.color.length; j++){
+      const ny = ((((j + 1) * 18) + 170) + y)
+      change(x,ny,changes.ja[j],changes.en[j],changes.color[j])
+    }
   }
 }
 
@@ -585,6 +711,37 @@ function stationname(x, y, nameja, nameen, num) {
 	paper.text(x + 44.215252, y + 19.906576, nameen).attr(nameenAttrs);
 }
 
+function change(x, y, nameja, nameen, color){
+  const paper = Snap("#svg_main");
+  let namejaAttrs = {
+    fontFamily: "'M PLUS 2'",
+    fontSize: "12px",
+    textAnchor: "left"
+  };
+
+  let nameenAttrs = {
+    fontFamily: "Montserrat",
+    fontSize: "5.3333292px",
+    textAnchor: "left"
+  };
+  const namejaWidth = textboxsize(nameja,namejaAttrs)
+  const nameenWidth = textboxsize(nameen,nameenAttrs)
+  if (namejaWidth > 60) {
+    namejaAttrs.textLength = 60 + "px";
+    namejaAttrs.lengthAdjust = "spacingAndGlyphs";
+  }
+  if (nameenWidth > 60) {
+    nameenAttrs.textLength = 60 + "px";
+    nameenAttrs.lengthAdjust = "spacingAndGlyphs";
+  }
+  paper.rect(`${x}px`, `${y}px`, 1, 18)
+    .attr({fill: "#000000"});
+  paper.rect(`${x}px`,`${y + 2}px`, 5, 16)
+    .attr({fill: color});
+  paper.text(x + 7, y + 12, nameja).attr(namejaAttrs);
+	paper.text(x + 7, y + 17.5, nameen).attr(nameenAttrs);
+}
+
 async function get(url) {
   try {
     const response = await fetch(url);
@@ -663,7 +820,7 @@ async function getdatafromurl(staname,linename,linemark,rawlinecolor) {
 window.onload = function onload(){
   addevent();
   
-  console.log("easy_rosenzu/script.js v0.3.7 loaded successfully."); 
+  console.log("easy_rosenzu/script.js v0.4.0 loaded successfully."); 
 
   const url = new URL(window.location.href);
   const staname = url.searchParams.get("staname")

@@ -181,10 +181,54 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
-                  ダウンロード
+                  乗換設定
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" data-bs-parent="#inputform">
+                <div class="accordion-body">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>乗換駅</th>
+                        <th>ラインカラー</th>
+                        <th>日本語路線名</th>
+                        <th>英語路線名</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="changes">
+                      <tr>
+                        <td><select id="changesta" class="form-control"></select></td>
+                        <td><input type="color" class="form-control" value="#000000" id="changecolor"></input></td>
+                        <td><input id="changenameja" class="form-control"></input></td>
+                        <td><input id="changenameen" class="form-control"></input></td>
+                        <td><button id="addchange" class="btn btn-outline-primary w-100 text-nowrap">設定</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>乗換駅</th>
+                        <th>ラインカラー</th>
+                        <th>日本語路線名</th>
+                        <th>英語路線名</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="addList">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
+                  ダウンロード
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" data-bs-parent="#inputform">
                 <div class="accordion-body">
                   <div class="d-grid gap-2">
                     <button id="pngbutton" class="btn btn-outline-primary text-nowrap">PNG形式で保存</button>
@@ -195,11 +239,11 @@
             </div>
             <div class="accordion-item">
               <h2 class="accordion-header">
-                <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive">
+                <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseSix" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive">
                   エクスポート・インポート
                 </button>
               </h2>
-              <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" data-bs-parent="#inputform">
+              <div id="panelsStayOpen-collapseSix" class="accordion-collapse collapse" data-bs-parent="#inputform">
                 <div class="accordion-body">
                   <div class="d-grid gap-2">
                     <button id="exportbutton" class="btn btn-outline-primary text-nowrap">jsonにエクスポート</button>
@@ -214,11 +258,11 @@
             </div>
             <div class="accordion-item">
               <h2 class="accordion-header">
-                <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseSix" aria-expanded="false" aria-controls="panelsStayOpen-collapseSix">
+                <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseSeven" aria-expanded="false" aria-controls="panelsStayOpen-collapseSix">
                   プラグイン
                 </button>
               </h2>
-              <div id="panelsStayOpen-collapseSix" class="accordion-collapse collapse" data-bs-parent="#inputform">
+              <div id="panelsStayOpen-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#inputform">
                 <div class="accordion-body">
                   <div class="d-grid gap-2">
                     <a class="btn btn-outline-primary text-nowrap" id="bookmarklet">空想鉄道からインポート</a>
@@ -228,7 +272,7 @@
               </div>
             </div>
           </div>
-          <span class="d-flex flex-wrap py-3 my-4 border-top"><a href="https://github.com/minumarapid/easy_rosenzu?tab=readme-ov-file#readme">説明書</a></span>
+          <span class="d-flex flex-wrap py-3 my-4 border-top"><a href="https://github.com/minumarapid/easy_rosenzu?tab=readme-ov-file#readme" target=”_blank>説明書</a></span>
         </div>
       </div>
     </div>

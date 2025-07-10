@@ -6,11 +6,13 @@ function exportJson() {
     const stanameja = [];
     const stanameen = [];
     const stops = [];
+    const changes = [];
     for(let i = 0; i < stationdata.length; i++){
       const nowedit = stationdata[i];
       stanameja.push(nowedit.nameja);
       stanameen.push(nowedit.nameen);
       stops.push(nowedit.stops);
+      changes.push(nowedit.changes)
     }
     const typenameja = [];
     const typenameen = [];
@@ -30,7 +32,8 @@ function exportJson() {
       "stadata" : {
         "stanameja" : stanameja,
         "stanameen" : stanameen,
-        "stops" : stops
+        "stops" : stops,
+        "changes" : changes
       },
       "typedata" : {
         "typenameja" : typenameja,
@@ -109,6 +112,23 @@ function pushJson(json){
           color.value = data.typedata.color[j];
           console.log(color.value,data.typedata.color[j])
         });
+      }
+    }
+    if(data.stadata.changes[i].color.length > 0){
+      for(let j = 0; j < data.stadata.changes[i].color.length; j++){
+        const inp = {
+          "element" : [document.getElementById("changesta"),document.getElementById("changecolor"),document.getElementById("changenameja"),document.getElementById("changenameen")],
+          "id" : ["","color","ja","en"]
+        }
+        for(let k = 0; k < 4; k++){
+          if(k == 0){
+            inp.element[k].value = i.toString()
+          } else {
+            inp.element[k].value = data.stadata.changes[i][inp.id[k]][j]
+          }
+        }
+        
+      addChangeList();
       }
     }
   }
