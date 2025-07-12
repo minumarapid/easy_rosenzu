@@ -761,13 +761,13 @@ function urlShare() {
   form.innerText = `${url.origin}?q=${encodeURIComponent(exportJson())}`
 }
 
-async function shareTwitter(data){
+/*async function shareTwitter(data){
   const url = new URL(window.location.href);
   const shareUrl = `${url.origin}?q=${encodeURIComponent(exportJson())}`
   const shortUrl = await get(`https://xgd.io/V1/shorten?url=${shareUrl}&key=${xgdUrlKey}`)
   const twitterUrl = `https://twitter.com/intent/tweet?text=簡易路線図ジェネレータで"${data[5]}"を作成しました！ ${shortUrl}`
   window.open(twitterUrl, "_blank");
-}
+}*/
 
 async function get(url) {
   try {
