@@ -84,11 +84,11 @@ function addevent() {
     window.alert("コピーしました。")
   });
 
-  const twittershare = document.getElementById("shareTwitter");
+  /*const twittershare = document.getElementById("shareTwitter");
   twittershare.addEventListener("click", () => {
     const data = getdatafromtextarea();
     shareTwitter(data);
-  });
+  });*/
 }
 
 function error(str){
