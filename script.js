@@ -1,12 +1,12 @@
 // easy_rosenzu/script.js - v0.4.0
 // 簡易路線図ジェネレータは、駅の名前や種別を入力することで、snapsvgを使用して路線図を自動で描画するサイトです。
 function main() {
-  //TODO: mainの関数。実行順に関数を実行する。 ]
   const data = getdatafromtextarea();
   const editdata = exportJson();
   setupStationNameSelect();
   stopscheckboxcreate(data);
   typecolorformcreate(data);
+  urlShare(data);
   station(data);
   sessionStorage.editdata = editdata;
 }
@@ -69,12 +69,25 @@ function addevent() {
     }
   });
 
-  const bookmarklet = document.getElementById("bookmarklet");
-  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'))
-  bookmarklet.href = kuTetsuToRosenzu;
-  bookmarklet.addEventListener("click", () => {
+  const bookmarkletHlef = document.getElementById("bookmarkletHlef");
+  bookmarkletHlef.href = kuTetsuToRosenzu;
+  const bookmarkletCopy = document.getElementById("bookmarkletCopy");
+  bookmarkletCopy.addEventListener("click", () => {
     navigator.clipboard.writeText(kuTetsuToRosenzu);
-    toastBootstrap.show()
+    window.alert("コピーしました。")
+  });
+
+  const shareUrlCopy = document.getElementById("shareUrlCopy");
+  shareUrlCopy.addEventListener("click", () => {
+    const url = new URL(window.location.href);
+    navigator.clipboard.writeText(`${url.origin}?q=${exportJson()}`);
+    window.alert("コピーしました。")
+  });
+
+  const twittershare = document.getElementById("shareTwitter");
+  twittershare.addEventListener("click", () => {
+    const data = getdatafromtextarea();
+    shareTwitter(data);
   });
 }
 
@@ -554,7 +567,7 @@ function station(data) {
     }
     stationname(x, y - 2, nameja, nameen, num);
     if(0 < stationdata[i].changes.color.length){
-      paper.rect(x, y -3, 1, 195)
+      paper.rect(x, y -5, 1, 195)
       .attr({fill: "#000000"});
     }
     for(let j = 0; j < stationdata[i].changes.color.length; j++){
@@ -742,6 +755,20 @@ function change(x, y, nameja, nameen, color){
 	paper.text(x + 7, y + 17.5, nameen).attr(nameenAttrs);
 }
 
+function urlShare() {
+  const url = new URL(window.location.href);
+  const form = document.getElementById("shareURL")
+  form.innerText = `${url.origin}?q=${encodeURIComponent(exportJson())}`
+}
+
+async function shareTwitter(data){
+  const url = new URL(window.location.href);
+  const shareUrl = `${url.origin}?q=${encodeURIComponent(exportJson())}`
+  const shortUrl = await get(`https://xgd.io/V1/shorten?url=${shareUrl}&key=${xgdUrlKey}`)
+  const twitterUrl = `https://twitter.com/intent/tweet?text=簡易路線図ジェネレータで"${data[5]}"を作成しました！ ${shortUrl}`
+  window.open(twitterUrl, "_blank");
+}
+
 async function get(url) {
   try {
     const response = await fetch(url);
@@ -774,46 +801,62 @@ function rgbaToHex(rgba) {
   return rgba; // 無効な入力の場合は元の値を返す
 }
 
-async function getdatafromurl(staname,linename,linemark,rawlinecolor) {
+async function getdatafromurl(q) {
 
-    const linecolor = rgbaToHex(rawlinecolor);
+  let data;
 
+  try {
+    data = JSON.parse(q);
+  } catch (e) {
+    console.error("JSONのパースに失敗しました", e);
+    return;
+  }
 
-    const linenameen = await get(`https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/exec?text=${linename}&source=ja&target=en`);
-    const stanameen = await get(`https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/exec?text=${staname}&source=ja&target=en`);
+  console.log(data)
 
+  const linecolor = [];
+  data.typedata.color.forEach((color) => {
+    linecolor.push(rgbaToHex(color))
+  })
 
+  async function tralinenameen() {
+    const url = `https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/exec?text=${data.linedata.linenameja}&source=ja&target=en`
+    const res = await get(url); 
+    return res.split(",");
+  };
 
-    console.log(staname,linename,linemark,stanameen,linenameen,linecolor);
+  async function trastanameen() {
+    const url = `https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/exec?text=${data.stadata.stanameja.join(",")}&source=ja&target=en`
+    const res = await get(url); 
+    return res.split(",");
+  };
+  
+  const linenameen = data.linedata.linenameen ?? await tralinenameen();
+  const stanameen  = data.stadata.stanameen  ?? await trastanameen();
 
-    const stops = (() => {
-      const data = [];
-      for(let i = 0; i < staname.split(",").length; i++){
-        data.push([true])
-      }
-      return data
-    })();
-    console.log(stops)
+  console.log(linenameen)
+  console.log(stanameen)
 
-    const returndata = JSON.stringify({
-      "linedata" : {
-        "linenameja" : linename,
-        "linenameen" : linenameen,
-        "linemark" : linemark
-      },
-      "stadata" : {
-        "stanameja" : staname.split(","),
-        "stanameen" : stanameen.split(","),
-        "stops" : stops
-      },
-      "typedata" : {
-        "typenameja" : [""],
-        "typenameen" : [""],
-        "color" : [linecolor]
-      }
-    })
-    console.log(returndata)
-    pushJson(returndata)
+  const returndata = JSON.stringify({
+    "linedata" : {
+      "linenameja" : data.linedata.linenameja || "",
+      "linenameen" : linenameen || "",
+      "linemark" : data.linedata.linemark || ""
+    },
+    "stadata" : {
+      "stanameja" : data.stadata.stanameja || [],
+      "stanameen" : stanameen || [],
+      "stops" : data.stadata.stops || [[true]],
+      "changes" : data.stadata.changes || []
+    },
+    "typedata" : {
+      "typenameja" : data.typedata.typenameja || [],
+      "typenameen" : data.typedata.typenameen || [],
+      "color" : linecolor || []
+    }
+  })
+  console.log(returndata)
+  pushJson(returndata)
 }
 
 // 乗換案内の実装予定はありません。いまのところ。
@@ -823,12 +866,9 @@ window.onload = function onload(){
   console.log("easy_rosenzu/script.js v0.4.0 loaded successfully."); 
 
   const url = new URL(window.location.href);
-  const staname = url.searchParams.get("staname")
-  const linename = url.searchParams.get("linename");
-  const linemark = url.searchParams.get("linemark");
-  const linecolor = url.searchParams.get("linecolor");
-  if (staname !== null || linename !== null || linemark !== null || linecolor !== null){
-    getdatafromurl(staname,linename,linemark,linecolor);
+  const q = url.searchParams.get("q")
+  if (q){
+    getdatafromurl(q);
   } else if(sessionStorage.getItem('editdata')){
     pushJson(sessionStorage.getItem('editdata'))
   } else {

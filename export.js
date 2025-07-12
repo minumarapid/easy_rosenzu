@@ -85,7 +85,7 @@ function pushJson(json){
   } else {
     data = json;
   }
-
+  console.log(data)
   const linenameja = document.getElementById("linenameja");
   const linenameen = document.getElementById("linenameen");
   const linemark = document.getElementById("number");
@@ -93,28 +93,32 @@ function pushJson(json){
   const typenameen = document.getElementById("typenameen");
   const stanameja = document.getElementById("stationnameja");
   const stanameen = document.getElementById("stationnameen");
-  linenameja.value = data.linedata.linenameja;
-  linenameen.value = data.linedata.linenameen;
-  linemark.value = data.linedata.linemark;
-  stanameja.value = data.stadata.stanameja.join("\n");  
-  stanameen.value = data.stadata.stanameen.join("\n");  
-  typenameja.value = data.typedata.typenameja.join("\n");  
-  typenameen.value = data.typedata.typenameen.join("\n");  
+  linenameja.value = data.linedata.linenameja || "";
+  linenameen.value = data.linedata.linenameen || "";
+  linemark.value   = data.linedata.linemark   || "";
+  stanameja.value  = data.stadata.stanameja?.join("\n") || "";
+  stanameen.value  = data.stadata.stanameen?.join("\n") || "";
+  typenameja.value = data.typedata.typenameja?.join("\n") || "";
+  typenameen.value = data.typedata.typenameen?.join("\n") || "";
+  console.log(data.linedata.linenameja || "",data.linedata.linenameen || "",data.linedata.linemark || "",data.stadata.stanameja?.join("\n") || "",data.stadata.stanameen?.join("\n") || "",data.typedata.typenameja?.join("\n") || "",data.typedata.typenameen?.join("\n") || "")
+  document.getElementById("addList").innerHTML = ""
   main();
   for(let i = 0; i < data.stadata.stanameja.length; i++){
-    for(let j = 0; j < data.typedata.typenameja.length; j++){
-      waitForElement(`stops_${i}_${j}`, (checkbox) => {
-        checkbox.checked = data.stadata.stops[i][j];
-        console.log(checkbox.checked,data.stadata.stops[i][j])
-      });
-      if(i == 0){
+    for(let j = 0; j < data.typedata.color.length; j++){
+      if(data.stadata.stops[i]){
+        waitForElement(`stops_${i}_${j}`, (checkbox) => {
+          checkbox.checked = data.stadata.stops[i][j];
+          console.log(checkbox.checked,data.stadata.stops[i][j])
+        });
+      }
+      if(data.typedata.color[j] && i == 0){
         waitForElement(`color_${j}`, (color) => {
           color.value = data.typedata.color[j];
           console.log(color.value,data.typedata.color[j])
         });
       }
     }
-    if(data.stadata.changes[i].color.length > 0){
+    if(data.stadata.changes[i] !== undefined && data.stadata.changes[i].color.length > 0){
       for(let j = 0; j < data.stadata.changes[i].color.length; j++){
         const inp = {
           "element" : [document.getElementById("changesta"),document.getElementById("changecolor"),document.getElementById("changenameja"),document.getElementById("changenameen")],
@@ -127,8 +131,7 @@ function pushJson(json){
             inp.element[k].value = data.stadata.changes[i][inp.id[k]][j]
           }
         }
-        
-      addChangeList();
+        addChangeList();
       }
     }
   }

@@ -1,14 +1,15 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script src="KEY.js"></script>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-33FY2VHZQL"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id="+googleTagKey></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-33FY2VHZQL');
+      gtag('config', googleTagKey);
     </script>
 
     <meta charset="utf-8">
@@ -27,6 +28,7 @@
     <link rel="icon" href="/image/favicon.ico">
     <title>簡易路線図ジェネレータ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
       @import url('https://fonts.googleapis.com/css2?family=M+PLUS+2&family=Montserrat:ital@0;1&display=swap');
       /*@import url('https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@500&family=Montserrat:ital,wght@0,500;1,500&display=swap');*/
@@ -97,7 +99,7 @@
       <div class="row">
         <div class="col-sm-7">
           <div class="sticky-top mb-3 z-0">
-            <div id="container" class=" bg-white p-2 my-1 overflow-x-scroll">ここに路線図が表示されます</div>
+            <div id="container" class=" bg-white p-2 my-1 overflow-x-scroll rounded">ここに路線図が表示されます</div>
             <p id="error" class="text-danger"></p>
           </div>
         </div>
@@ -225,7 +227,7 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
-                  ダウンロード
+                  エクスポート・インポート
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" data-bs-parent="#inputform">
@@ -233,6 +235,13 @@
                   <div class="d-grid gap-2">
                     <button id="pngbutton" class="btn btn-outline-primary text-nowrap">PNG形式で保存</button>
                     <button id="svgbutton" class="btn btn-outline-secondary text-nowrap">SVG形式で保存</button>
+                    <hr/>
+                    <button id="exportbutton" class="btn btn-outline-primary text-nowrap">jsonにエクスポート</button>
+                    <div class="input-group">
+                      <label class="d-none" for="formFile">jsonからインポート</label>
+                      <input class="form-control" type="file" id="formFile" accept=".json">
+                      <button id="importbutton" class="btn btn-outline-secondary" type="button">インポート</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -240,18 +249,14 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseSix" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive">
-                  エクスポート・インポート
+                  共有
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseSix" class="accordion-collapse collapse" data-bs-parent="#inputform">
                 <div class="accordion-body">
                   <div class="d-grid gap-2">
-                    <button id="exportbutton" class="btn btn-outline-primary text-nowrap">jsonにエクスポート</button>
-                    <div class="input-group">
-                      <label class="d-none" for="formFile">jsonからインポート</label>
-                      <input class="form-control" type="file" id="formFile">
-                      <button id="importbutton" class="btn btn-outline-secondary" type="button">インポート</button>
-                    </div>
+                    <!-- <button class="btn btn-primary text-nowrap" id="shareTwitter"><i class="bi bi-twitter"></i> Twitterで共有</button> -->
+                    <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#shareUrlModal"><i class="bi bi-link-45deg"></i> URLで共有</button>
                   </div>
                 </div>
               </div>
@@ -265,14 +270,14 @@
               <div id="panelsStayOpen-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#inputform">
                 <div class="accordion-body">
                   <div class="d-grid gap-2">
-                    <a class="btn btn-outline-primary text-nowrap" id="bookmarklet">空想鉄道からインポート</a>
+                    <a class="btn btn-outline-primary text-nowrap" id="bookmarklet" data-bs-toggle="modal" data-bs-target="#bookmarkletModal">空想鉄道からインポート</a>
                     <span>空想鉄道からデータをインポートできるブックマークレットです。</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <span class="d-flex flex-wrap py-3 my-4 border-top"><a href="https://github.com/minumarapid/easy_rosenzu?tab=readme-ov-file#readme" target=”_blank>説明書</a></span>
+          <span class="d-flex flex-wrap py-3 my-4 border-top"><a href="https://github.com/minumarapid/easy_rosenzu?tab=readme-ov-file#readme" target="_blank">説明書</a></span>
         </div>
       </div>
     </div>
@@ -291,20 +296,87 @@
         </div>
       </footer>
     </div>
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-          <img src="..." class="rounded me-2" alt="...">
-          <strong class="me-auto">簡易路線図ジェネレータ</strong>
-          <small></small>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+
+    <div class="modal fade" id="bookmarkletModal" aria-hidden="true" aria-labelledby="bookmarkletModalLabel" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="bookmarkletModalLabel">ブックマークレットのご案内</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h4>ブックマークレットの登録方法</h4>
+            <h5>PCの場合</h5>
+            <span>以下のPC用と書かれたボタンをブックマークバーにドラッグアンドドロップしてください。</span>
+            <div class="d-grid gap-2">
+              <a id="bookmarkletHlef" class="mt-2 btn btn-outline-primary">PC用</a>
+            </div>
+            <hr/>
+            <h5>スマホの場合</h5>
+            <span>以下のスマホ用と書かれたボタンをクリックし、スクリプトをコピーします。<br>次に、適当なページでブックマークを作成します。<br>最後に先ほど作成したブックマークを編集し、URL欄に先ほどコピーしたスクリプトをペーストします。</span>
+            <div class="d-grid gap-2">
+              <button class="mt-2 btn btn-outline-primary" data-bs-target="#copyModal" data-bs-toggle="modal">スマホ用</button>
+            </div>
+            <hr/>
+            <h4>使用方法</h4>
+            <span>登録したブックマークレットを空想鉄道シリーズの作品ページで実行することでインポートダイアログが起動します。<br>実行可能ページは以下の通りです。</span>
+            <ul>
+              <li><span>空想鉄道(<a href="https://ku-tetsu.net" target="_blank">https://ku-tetsu.net</a>)</span></li>
+              <li><span>空想旧鉄(<a href="https://old.ku-tetsu.net" target="_blank">https://old.ku-tetsu.net</a>)</span></li>
+              <li><span>空想道路(<a href="https://road.chi-zu.net/" target="_blank">https://road.chi-zu.net/</a>)</span></li>
+              <li><span>空想地図(<a href="https://any.chi-zu.net/" target="_blank">https://any.chi-zu.net/</a>)</span></li>
+              <li><span>空想別館(<a href="https://annex.chi-zu.net/" target="_blank">https://annex.chi-zu.net/</a>)</span></li>
+            </ul>
+            <span>実行可能ページ以外で実行した場合は、エラーを表示し即座にインポートスクリプトが終了します。</span>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal">閉じる</button>
+          </div>
         </div>
-        <div class="toast-body">
-          コードをクリップボードにコピーしました。
+      </div>
+    </div>
+    <div class="modal fade" id="copyModal" aria-hidden="true" aria-labelledby="copyLabel" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">確認</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <span>インポートスクリプト本体をクリップボードにコピーします。<br>よろしいですか？</span>
+            <div class="d-grid gap-2">
+              <button class="my-2 btn btn-outline-primary" id="bookmarkletCopy" data-bs-target="#copyModal" data-bs-toggle="modal">ブックマークレットをコピー</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-target="#bookmarkletModal" data-bs-toggle="modal">戻る</button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal">閉じる</button>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- linkshareModal -->
+    <div class="modal fade" id="shareUrlModal" tabindex="-1" aria-labelledby="shareUrlModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="shareUrlModalLabel">URLで共有</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <pre id="shareURL"></pre>
+            <div class="d-grid gap-2">
+              <button id="shareUrlCopy"class="btn btn-outline-primary">URLをコピー</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="ku-tetsu_to_rosenzu.js"></script>
     <script src="download.js"></script>
