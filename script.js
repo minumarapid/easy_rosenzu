@@ -80,7 +80,7 @@ function addevent() {
   const shareUrlCopy = document.getElementById("shareUrlCopy");
   shareUrlCopy.addEventListener("click", () => {
     const url = new URL(window.location.href);
-    navigator.clipboard.writeText(`${url.origin}?q=${exportJson()}`);
+    navigator.clipboard.writeText(`${url.origin}?q=${encodeURIComponent(exportJson())}`);
     window.alert("コピーしました。")
   });
 
