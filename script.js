@@ -1,4 +1,4 @@
-// easy_rosenzu/script.js - v0.4.0
+// easy_rosenzu/script.js - v0.4.2
 // 簡易路線図ジェネレータは、駅の名前や種別を入力することで、snapsvgを使用して路線図を自動で描画するサイトです。
 function main() {
   const data = getdatafromtextarea();
@@ -6,9 +6,15 @@ function main() {
   setupStationNameSelect();
   stopscheckboxcreate(data);
   typecolorformcreate(data);
+  importDialog();
   urlShare(data);
   station(data);
   sessionStorage.editdata = editdata;
+  const fileName = document.getElementById("fileName")
+  let linename = data[6].split('/').join('_').split(' ').join('_')
+  const timestamp = new Date().toISOString().replace(/[-:T]/g, "").split(".")[0]; 
+  fileName.value = `${linename}_${timestamp}`
+  downloadDialog();
 }
 
 function isSafari() {
@@ -18,25 +24,28 @@ function isSafari() {
   return isSafari;
 }
 
-function addevent() {
+async function addevent() {
   const textareas = document.querySelectorAll('.inputarea');
   textareas.forEach(area => {
     area.addEventListener('input',() => {
       main();
     });
   });
+  
 
-
-  const pngbutton = document.getElementById("pngbutton");
-  pngbutton.addEventListener("click", () => { 
-    const data = getdatafromtextarea();
-    downloadPng(data);
+  const typeSelect = document.getElementById("typeSelect")
+  typeSelect.addEventListener("change",() => {
+    downloadDialog();
   });
 
-  const svgbutton = document.getElementById("svgbutton");
-  svgbutton.addEventListener("click", () => {
-    const data = getdatafromtextarea();
-    downloadSvg(data);
+  const loadTypeSelect = document.getElementById("loadTypeSelect");
+  loadTypeSelect.addEventListener("change",() => {
+    importDialog();
+  });
+
+  const fileName = document.getElementById("fileName");
+  fileName.addEventListener("input",() => {
+    downloadDialog();
   });
 
   const addchangebtn = document.getElementById("addchange");
@@ -44,23 +53,17 @@ function addevent() {
     addChangeList();
     main();
   });
-  
-  const exportbutton = document.getElementById("exportbutton");
-  exportbutton.addEventListener("click", () => {
-    const data = getdatafromtextarea();
-    const object = exportJson();
-    downloadJson(object,data)
-  });
 
-  const importbutton = document.getElementById("importbutton");
+  //const importbutton = document.getElementById("importbutton");
   document.querySelector('#formFile').addEventListener('change', e => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
+      const a = document.getElementById("loadBtn")
       reader.onload = e => {
-        importbutton.addEventListener("click", () => {
+        a.addEventListener("click", () =>{
           pushJson(e.target.result);
-        });
+        })
       };
       // BlobまたはFileをテキストとして読み込む
       // 第2引数にencodingを指定可能、
@@ -78,17 +81,56 @@ function addevent() {
   });
 
   const shareUrlCopy = document.getElementById("shareUrlCopy");
+  const shareURL = document.getElementById("shareURL");
   shareUrlCopy.addEventListener("click", () => {
-    const url = new URL(window.location.href);
-    navigator.clipboard.writeText(`${url.origin}?q=${encodeURIComponent(exportJson())}`);
+    navigator.clipboard.writeText(shareURL.innerText);
     window.alert("コピーしました。")
   });
 
-  /*const twittershare = document.getElementById("shareTwitter");
-  twittershare.addEventListener("click", () => {
-    const data = getdatafromtextarea();
-    shareTwitter(data);
-  });*/
+  const shortUrl = document.getElementById("shortUrlBtn");
+  shortUrl.addEventListener("click", async () => {
+    try {
+      const data = await createShortUrl(shareURL.innerText)
+      if(data.success){
+        shareURL.innerText = data.shortUrl;
+      } else {
+        alert(data.message)
+      }
+    } catch (error) {
+      alert(error.message)
+    } finally {
+      shortUrl.disabled = true;
+    }
+  });
+
+  const twittershare = document.getElementById("shareTwitter");
+  const twiInput = document.getElementById("shareTwiInput");
+  const twiBtn = document.getElementById("shareTwitterBtn");
+  const twiTag = document.getElementById("TwiHashTag");
+  twiBtn.addEventListener("click", async () => {
+    const lineData = getdatafromtextarea();
+    twiBtn.disabled = true;
+    twiInput.disabled = true;
+    try {
+      const url = new URL(window.location.href);
+      const shareUrl = `${url.origin}?q=${encodeURIComponent(exportJson())}`
+      const data = await createShortUrl(shareUrl);
+      if(data.success){
+        twiInput.value = `簡易路線図ジェネレータで"${lineData[5]}"を作成しました！`
+        twiTag.value = `${data.shortUrl}\n#簡易路線図ジェネレータ`
+        twiBtn.disabled = false;
+        twiInput.disabled = false;
+        twittershare.addEventListener("click", () => {
+          const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${twiInput.value}\n${data.shortUrl}\n#簡易路線図ジェネレータ`)}`
+          window.open(twitterUrl, "_blank");
+        })
+      } else {
+        alert(data.message)
+      }
+    } catch (error) {
+      alert(error.message)
+    }
+  });
 }
 
 function error(str){
@@ -355,9 +397,9 @@ function getstopsdata(data) {
           stopsdata[i] = [];
         }
         stopsdata[i][j] = chackbox.checked;
-      } else {
+      }/* else {
         console.error(`Checkbox for station ${i} and type ${j} not found.`);
-      }
+      }*/
     }
   }
   return stopsdata;
@@ -369,7 +411,7 @@ function getcolordata(data) {
   for(let i=0; i < typejadata.length; i++){
     let color = document.getElementById(`color_${i}`);
     if (!color) {
-      console.error(`Color input for type ${i} not found.`);
+      //console.error(`Color input for type ${i} not found.`);
       colorvalue[i] = null
     } else {
       colorvalue[i] = color.value
@@ -757,17 +799,11 @@ function change(x, y, nameja, nameen, color){
 
 function urlShare() {
   const url = new URL(window.location.href);
-  const form = document.getElementById("shareURL")
-  form.innerText = `${url.origin}?q=${encodeURIComponent(exportJson())}`
+  const shareUrl = document.getElementById("shareURL")
+  const shortUrl = document.getElementById("shortUrlBtn");
+  shortUrl.disabled = false;
+  shareUrl.innerText = `${url.origin}?q=${encodeURIComponent(exportJson())}`
 }
-
-/*async function shareTwitter(data){
-  const url = new URL(window.location.href);
-  const shareUrl = `${url.origin}?q=${encodeURIComponent(exportJson())}`
-  const shortUrl = await get(`https://xgd.io/V1/shorten?url=${shareUrl}&key=${xgdUrlKey}`)
-  const twitterUrl = `https://twitter.com/intent/tweet?text=簡易路線図ジェネレータで"${data[5]}"を作成しました！ ${shortUrl}`
-  window.open(twitterUrl, "_blank");
-}*/
 
 async function get(url) {
   try {
@@ -863,7 +899,7 @@ async function getdatafromurl(q) {
 window.onload = function onload(){
   addevent();
   
-  console.log("easy_rosenzu/script.js v0.4.0 loaded successfully."); 
+  console.log("easy_rosenzu/script.js v0.4.2 loaded successfully."); 
 
   const url = new URL(window.location.href);
   const q = url.searchParams.get("q")

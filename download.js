@@ -1,50 +1,145 @@
-function downloadSvg(data) {
-  let linename = data[6].split('/').join('_')
-  linename = data[6].split(' ').join('_')
-  console.log(linename);
+function importDialog() {
+  const typeSelect = document.getElementById("loadTypeSelect").value;
+  if(typeSelect){
+    const jsonDiv = document.getElementById("jsonImport")
+    const browserDiv = document.getElementById("browserImport")
+    if(typeSelect === "json"){
+      browserDiv.className = "d-none"
+      jsonDiv.className = ""
+    } else if(typeSelect === "browser"){
+      browserDiv.className = ""
+      jsonDiv.className = "d-none"
+      const table = document.getElementById("saveList")
+      if(table.hasChildNodes()){table.innerHTML = ""}
+      if(localStorage.saveDataArr){
+        const arr = localStorage.saveDataArr.split(",");
+        for(let i = 0; i < arr.length; i++){
+          const tr = document.createElement("tr");
+          tr.id = `loadData_${i}`
+          for(let j = 0; j < 3; j++){
+            const td = document.createElement("td");
+            if(j === 0){
+              td.innerText = decodeURIComponent(arr[i]);
+            } else if(j !== 0){
+              const btn = document.createElement("button");
+              if(j === 1){
+                btn.innerText = "読込";
+                btn.className = "btn btn-outline-primary"
+                btn.onclick = (() => {
+                  pushJson(localStorage.getItem(`save_${arr[i]}`))
+                });
+              } else if(j === 2){
+                btn.innerText = "削除";
+                btn.className = "btn btn-outline-danger"
+                btn.onclick = (() => {
+                  localStorage.removeItem(`save_${arr[i]}`);
+                  arr.splice( i, 1 );
+                  console.log(arr)
+                  localStorage.saveDataArr = arr.join(",");
+                  importDialog();
+                });
+              }
+              td.appendChild(btn);
+            }
+            tr.appendChild(td);
+          }
+          table.appendChild(tr);
+        }
+      } else {
+        const tr = document.createElement("tr")
+        for(let i = 0; i < 2; i++){
+          const td = document.createElement("td")
+          if(i === 0){
+            td.innerText = "データが見つかりませんでした"
+            td.colSpan = 2;
+          } else if (i === 1){
+            const btn = document.createElement("button")
+            btn.innerText = "再読込";
+            btn.className = "btn btn-outline-primary"
+            btn.onclick = (() => {
+              importDialog();
+            });
+            td.appendChild(btn);
+          }
+          tr.appendChild(td)
+        }
+        table.appendChild(tr)
+      }
+    } else {
+      browserDiv.className = "d-none"
+      jsonDiv.className = "d-none"
+    }
+  }
+}
 
+function downloadDialog() {
+  const fileTypeSelect = document.getElementById("typeSelect");
+  const fileType = fileTypeSelect.value
+  const fileTypeName = (fileType.includes(".")) ? fileType : "";
+
+  const fileTypeT = document.getElementById("fileType")
+  fileTypeT.innerText = fileTypeName
+  const fileName = document.getElementById("fileName").value
+  if(fileType === ".png"){
+    downloadPng(fileName);
+  } else if(fileType === ".svg"){
+    downloadSvg(fileName);
+  } else if(fileType === ".json"){
+    downloadJson(fileName);
+  } else if(fileType === "browser"){
+    saveBrowser(fileName);
+  } else {
+    const a = document.getElementById("dataSaveBtn");
+    a.removeAttribute('href');
+    a.removeAttribute('download');
+    a.onclick = null;
+  }
+}
+
+function saveBrowser(rawFileName){
+  const fileName = encodeURIComponent(rawFileName)
+  const a = document.getElementById("dataSaveBtn");
+  a.removeAttribute('href');
+  a.removeAttribute('download');
+  a.onclick = (() =>{
+    const saveName = `save_${fileName}`
+    const arr = (localStorage.saveDataArr) ? localStorage.saveDataArr.split(",") : [];
+    if(!localStorage.saveDataArr || !arr.includes(fileName)){
+      arr.push(fileName)
+      localStorage.saveDataArr = arr.join(",");
+    }
+    localStorage.setItem(saveName, exportJson());
+    alert("保存しました。")
+  });
+}
+
+function downloadSvg(fileName) {
   const svg = document.getElementById("svg_main")
   removeTopLevelStyleTags(svg);
   const svgText = new XMLSerializer().serializeToString(svg);
   const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
   const svgUrl = URL.createObjectURL(svgBlob);
-  const timestamp = new Date().toISOString().replace(/[-:T]/g, "").split(".")[0];  
-  const a = document.createElement('a');
+  const a = document.getElementById("dataSaveBtn");
   a.href = svgUrl;
-  a.download = `${linename}_${timestamp}.svg`;
-
-  document.body.appendChild(a);
-  a.click();
-
-  document.body.removeChild(a);
+  a.download = `${fileName}.svg`;
+  a.onclick = null;
   URL.revokeObjectURL(svgUrl);
 }
 
-function downloadJson(json,data) {
-  const linename = data[6].split('/').join('_').split(' ').join('_')
-
+function downloadJson(fileName) {
+  const json = exportJson();
   const jsonBlob = new Blob([json], { type: 'application/json' });
-  const Url = URL.createObjectURL(jsonBlob);
-  const timestamp = new Date().toISOString().replace(/[-:T]/g, "").split(".")[0];  
-  const a = document.createElement('a');
+  const Url = URL.createObjectURL(jsonBlob); 
+  const a = document.getElementById("dataSaveBtn");
   a.href = Url;
-  a.download = `${linename}_${timestamp}.json`;
-
-  document.body.appendChild(a);
-  a.click();
-
-  document.body.removeChild(a);
+  a.download = `${fileName}.json`;
+  a.onclick = null;
   URL.revokeObjectURL(Url);
 }
 
-function downloadPng(data) {
+function downloadPng(fileName) {
   const container = document.getElementById("container");
   const svgElement = container.querySelector("svg");
-
-  let linename = data[6].split('/').join('_')
-  linename = data[6].split(' ').join('_')
-  console.log(linename);
-  
 
   const svg = document.getElementById("svg_main")
   const Mplus2 = fonts.Mplus2
@@ -83,13 +178,10 @@ function downloadPng(data) {
     context.drawImage(image, 0, 0, width, height);
 
     canvas.toBlob(function (blob) {
-      const timestamp = new Date().toISOString().replace(/[-:T]/g, "").split(".")[0];
-      const a = document.createElement("a");
+      const a = document.getElementById("dataSaveBtn");
+      a.onclick = null;
       a.href = URL.createObjectURL(blob);
-      a.download = `${linename}_${timestamp}.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      a.download = `${fileName}.png`;
       URL.revokeObjectURL(url);
     });
   };

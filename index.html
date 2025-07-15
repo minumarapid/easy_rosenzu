@@ -108,7 +108,7 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                  路線設定
+                  <i class="bi bi-bezier2"></i>　路線設定
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" data-bs-parent="#inputform">
@@ -141,7 +141,7 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                  駅設定
+                  <i class="bi bi-hdd-network-fill"></i>　駅設定
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#inputform">
@@ -160,7 +160,7 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-                  種別設定
+                  <i class="bi bi-distribute-vertical"></i>　種別設定
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" data-bs-parent="#inputform">
@@ -183,7 +183,7 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
-                  乗換設定
+                  <i class="bi bi-option"></i>　乗換設定
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" data-bs-parent="#inputform">
@@ -227,21 +227,20 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
-                  エクスポート・インポート
+                  <i class="bi bi-download"></i>　エクスポート・インポート
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" data-bs-parent="#inputform">
                 <div class="accordion-body">
                   <div class="d-grid gap-2">
-                    <button id="pngbutton" class="btn btn-outline-primary text-nowrap">PNG形式で保存</button>
-                    <button id="svgbutton" class="btn btn-outline-secondary text-nowrap">SVG形式で保存</button>
+                    <!-- <button id="pngbutton" class="btn btn-outline-primary text-nowrap"><i class="bi bi-image"></i> PNG形式で保存</button>
+                    <button id="svgbutton" class="btn btn-outline-secondary text-nowrap"><i class="bi bi-bezier"></i> SVG形式で保存</button>
                     <hr/>
-                    <button id="exportbutton" class="btn btn-outline-primary text-nowrap">jsonにエクスポート</button>
-                    <div class="input-group">
-                      <label class="d-none" for="formFile">jsonからインポート</label>
-                      <input class="form-control" type="file" id="formFile" accept=".json">
-                      <button id="importbutton" class="btn btn-outline-secondary" type="button">インポート</button>
-                    </div>
+                    <button id="exportbutton" class="btn btn-outline-primary text-nowrap"><i class="bi bi-braces"></i> jsonにエクスポート</button>
+
+                    <hr/> -->
+                    <button class="btn btn-outline-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#saveDatarModal" id="saveData"><i class="bi bi-box-arrow-in-down"></i>保存</button>
+                    <button class="btn btn-outline-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#loadDatarModal" id="loadData"><i class="bi bi-box-arrow-up"></i>読込</button>
                   </div>
                 </div>
               </div>
@@ -249,13 +248,13 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseSix" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive">
-                  共有
+                  <i class="bi bi-share"></i>　共有
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseSix" class="accordion-collapse collapse" data-bs-parent="#inputform">
                 <div class="accordion-body">
                   <div class="d-grid gap-2">
-                    <!-- <button class="btn btn-primary text-nowrap" id="shareTwitter"><i class="bi bi-twitter"></i> Twitterで共有</button> -->
+                    <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#shareTwitterModal" id="shareTwitterBtn"><i class="bi bi-twitter"></i> Twitterで共有</button>
                     <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#shareUrlModal"><i class="bi bi-link-45deg"></i> URLで共有</button>
                   </div>
                 </div>
@@ -264,7 +263,7 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed z-0" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseSeven" aria-expanded="false" aria-controls="panelsStayOpen-collapseSix">
-                  プラグイン
+                  <i class="bi bi-save"></i>　プラグイン
                 </button>
               </h2>
               <div id="panelsStayOpen-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#inputform">
@@ -277,7 +276,7 @@
               </div>
             </div>
           </div>
-          <span class="d-flex flex-wrap py-3 my-4 border-top"><a href="https://github.com/minumarapid/easy_rosenzu?tab=readme-ov-file#readme" target="_blank">説明書</a></span>
+          <span class="d-flex flex-wrap py-3 my-4 border-top"><a href="https://o38.me/archives/tools/2025/07/14/76/" target="_blank">説明書</a></span>
         </div>
       </div>
     </div>
@@ -367,12 +366,115 @@
           </div>
           <div class="modal-body">
             <pre id="shareURL"></pre>
-            <div class="d-grid gap-2">
-              <button id="shareUrlCopy"class="btn btn-outline-primary">URLをコピー</button>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button class="btn btn-primary me-md-2" type="button" id="shortUrlBtn">URL短縮</button>
+            <button class="btn btn-primary" type="button" id="shareUrlCopy">コピー</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- twittershareModal -->
+    <div class="modal fade" id="shareTwitterModal" tabindex="-1" aria-labelledby="shareTwitterModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="shareTwitterModalLabel">Twitterに投稿</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="text" id="shareTwiInput" class="form-control"></input>
+            <textarea class="form-control" id="TwiHashTag" rows="2" disabled></textarea>
+            <span>画像追加には対応しておりません。ダウンロードしたものを手動で添付してください。</span>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" type="button" id="shareTwitter">投稿</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- loadDataModal -->
+    <div class="modal fade" id="loadDatarModal" tabindex="-1" aria-labelledby="loadDataModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="loadDataModalLabel">読込</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <select id="loadTypeSelect" class="form-control">
+              <option selected></option>
+              <hr/>
+              <option value="json">.JSON</option>
+              <option value="browser">browserStorage</option>
+            </select>
+            <hr/>
+            <div id="jsonImport" class="d-none">
+              <div class="input-group">
+                <input class="form-control" type="file" id="formFile" accept=".json">
+                <button class="btn btn-outline-secondary" for="formFile" id="loadBtn" data-bs-dismiss="modal">読込</button>
+              </div>
+            </div>
+            
+            <div id="browserImport" class="d-none">
+              <div class="input-group">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>保存名</th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="saveList"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- saveDataModal -->
+    <div class="modal fade" id="saveDatarModal" tabindex="-1" aria-labelledby="saveDataModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="saveDataModalLabel">保存</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <span>保存形式を選択</span>
+            <select id="typeSelect" class="form-control">
+              <option selected></option>
+              <hr/>
+              <option value=".png">.PNG</option>
+              <option value=".svg">.SVG</option>
+              <option value=".json">.JSON</option>
+              <hr/>
+              <option value="browser">browserStorage</option>
+            </select>
+            <span class="text-body-secondary">PNGとSVGは出力画像を、JSONとbrowserStorageは編集データを保存します。<br>browserStorageはブラウザ内に存在するストレージを使用するためダウンロードが必要ありません。</span>
+            <hr/>
+            <span>fileName</span>
+            <div class="input-group">
+              <input type="text" class="form-control" id="fileName">
+              <span class="input-group-text" id="fileType"></span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a class="btn btn-primary" type="button" id="dataSaveBtn">保存</a>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>

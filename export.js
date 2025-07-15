@@ -138,3 +138,29 @@ function pushJson(json){
   main();
   console.log("インポートしました。")
 }
+
+async function createShortUrl(rawTargetUrl) {
+  const targetUrl = (targetUrl.include("easy-rosenzu.pages.dev")) ? rawTargetUrl.replase("easy-rosenzu.pages.dev","rosenzu.o38.me") : rawTargetUrl;
+  console.log(targetUrl)
+  const apiEndpoint = 'https://s.o38.me/api/create';
+  const apiKey = 'dV35Ey35';
+  
+  const fullUrl = `${apiEndpoint}?url=${encodeURIComponent(targetUrl)}`;
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers: {
+      'x-api-key': apiKey
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    console.error('API Error:', error);
+    return null;
+  }
+
+  const data = await response.json();
+  console.log('Short URL:', data.shortUrl);
+  return data;
+}
