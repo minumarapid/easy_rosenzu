@@ -140,7 +140,7 @@ function pushJson(json){
 }
 
 async function createShortUrl(rawTargetUrl) {
-  const targetUrl = (rawTargetUrl.includes("easy-rosenzu.pages.dev")) ? rawTargetUrl.replase("easy-rosenzu.pages.dev","rosenzu.o38.me") : rawTargetUrl;
+  const targetUrl = (rawTargetUrl.includes("easy-rosenzu.pages.dev")) ? rawTargetUrl.replace("easy-rosenzu.pages.dev","rosenzu.o38.me") : rawTargetUrl;
   console.log(targetUrl)
   const apiEndpoint = 'https://s.o38.me/api/create';
   const apiKey = 'dV35Ey35';
