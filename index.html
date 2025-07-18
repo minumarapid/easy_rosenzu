@@ -409,8 +409,9 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <span>読込形式を選択</span>
             <select id="loadTypeSelect" class="form-control">
-              <option selected></option>
+              <option selected value="none"></option>
               <hr/>
               <option value="json">.JSON</option>
               <option value="browser">browserStorage</option>
@@ -456,7 +457,7 @@
           <div class="modal-body">
             <span>保存形式を選択</span>
             <select id="typeSelect" class="form-control">
-              <option selected></option>
+              <option selected value="none"></option>
               <hr/>
               <option value=".png">.PNG</option>
               <option value=".svg">.SVG</option>
@@ -465,11 +466,13 @@
               <option value="browser">browserStorage</option>
             </select>
             <span class="text-body-secondary">PNGとSVGは出力画像を、JSONとbrowserStorageは編集データを保存します。<br>browserStorageはブラウザ内に存在するストレージを使用するためダウンロードが必要ありません。</span>
-            <hr/>
-            <span>fileName</span>
-            <div class="input-group">
-              <input type="text" class="form-control" id="fileName">
-              <span class="input-group-text" id="fileType"></span>
+            <div id="saveName" class="d-none">
+              <hr/>
+              <span>fileName</span>
+              <div class="input-group">
+                <input type="text" class="form-control" id="fileName">
+                <span class="input-group-text" id="fileType"></span>
+              </div>
             </div>
           </div>
           <div class="modal-footer">

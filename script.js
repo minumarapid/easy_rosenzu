@@ -710,8 +710,7 @@ function stationname(x, y, nameja, nameen, num) {
   let namejaAttrs = {
     fontFamily: "'M PLUS 2'",
     fontSize: "33.8667px",
-    textAnchor: "left",
-    "writing-mode": "vertical-rl",
+    textAnchor: "middle",
     skipx: 0,
   };
 
@@ -735,7 +734,7 @@ function stationname(x, y, nameja, nameen, num) {
   
   if (namejaWidth > 170) {
     if (isSafari()) {
-      namejaAttrs.textLength = (33.8667 * 5 / namejalen) + "px";
+      namejaAttrs.textLength = ((33.8667 * 5 / namejalen) * 1.5) + "px";
     } else {
       namejaAttrs.textLength = (33.8667 * 5) + "px";
     }
@@ -744,6 +743,7 @@ function stationname(x, y, nameja, nameen, num) {
     
     namejaAttrs.lengthAdjust = "spacingAndGlyphs";
     namejaAttrs.skipy = 33.8667 * 5 / namejalen;
+    namejaAttrs["writing-mode"] = "vertical-rl"
   } else {
     namejaAttrs.skipy = 33.8667
   }
@@ -760,9 +760,8 @@ function stationname(x, y, nameja, nameen, num) {
     stanumAttrs.lengthAdjust = "spacingAndGlyphs";
   }
   
-  paper.text(x + 25.682186, y + 15.098883, num)
-    .attr(stanumAttrs);
-  paper.text(x + 18.464384, y + 18.797308, nameja).attr(namejaAttrs);
+  paper.text(x + 25.682186, y + 15.098883, num).attr(stanumAttrs);
+  paper.text(x + 18.464384, (namejaWidth > 170 ? y + 31.5 : y + 47), nameja).attr(namejaAttrs);
 	paper.text(x + 44.215252, y + 19.906576, nameen).attr(nameenAttrs);
 }
 

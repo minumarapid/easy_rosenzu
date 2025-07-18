@@ -76,23 +76,28 @@ function downloadDialog() {
   const fileTypeSelect = document.getElementById("typeSelect");
   const fileType = fileTypeSelect.value
   const fileTypeName = (fileType.includes(".")) ? fileType : "";
-
   const fileTypeT = document.getElementById("fileType")
   fileTypeT.innerText = fileTypeName
   const fileName = document.getElementById("fileName").value
+  const saveForm = document.getElementById("saveName")
   if(fileType === ".png"){
     downloadPng(fileName);
+    saveForm.className=""
   } else if(fileType === ".svg"){
     downloadSvg(fileName);
+    saveForm.className=""
   } else if(fileType === ".json"){
     downloadJson(fileName);
+    saveForm.className=""
   } else if(fileType === "browser"){
     saveBrowser(fileName);
+    saveForm.className=""
   } else {
     const a = document.getElementById("dataSaveBtn");
     a.removeAttribute('href');
     a.removeAttribute('download');
     a.onclick = null;
+    saveForm.className="d-none"
   }
 }
 
@@ -161,28 +166,32 @@ function downloadPng(fileName) {
   const width = svgElement.viewBox.baseVal.width || svgElement.clientWidth || 800;
   const height = svgElement.viewBox.baseVal.height || svgElement.clientHeight || 600;
 
-
-
   image.onload = function () {
-    const scale = 2; 
+    // 修正前：すぐに描画＆toBlob
+    // 修正後：描画後に1フレーム待つ（フォントが反映されるのを待つ）
 
-    const canvas = document.createElement("canvas");
-    canvas.width = width * scale;
-    canvas.height = height * scale;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const scale = 2;
+        const canvas = document.createElement("canvas");
+        canvas.width = width * scale;
+        canvas.height = height * scale;
 
-    const context = canvas.getContext("2d");
-    context.fillStyle = "#ffffff";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    context.scale(scale, scale);
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.scale(scale, scale);
 
-    context.drawImage(image, 0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
 
-    canvas.toBlob(function (blob) {
-      const a = document.getElementById("dataSaveBtn");
-      a.onclick = null;
-      a.href = URL.createObjectURL(blob);
-      a.download = `${fileName}.png`;
-      URL.revokeObjectURL(url);
+        canvas.toBlob(function (blob) {
+          const a = document.getElementById("dataSaveBtn");
+          a.onclick = null;
+          a.href = URL.createObjectURL(blob);
+          a.download = `${fileName}.png`;
+          URL.revokeObjectURL(url);
+        });
+      });
     });
   };
 
