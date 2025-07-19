@@ -17,11 +17,8 @@ function main() {
   downloadDialog();
 }
 
-function isSafari() {
-  const ua = navigator.userAgent;
-
-  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
-  return isSafari;
+function isWebkit() {
+  return Date.parse("1969-12-31T23:59:59.9991Z") === 0;
 }
 
 async function addevent() {
@@ -733,7 +730,7 @@ function stationname(x, y, nameja, nameen, num) {
   const namejalen = namejaWidth / 33.8667
   
   if (namejaWidth > 170) {
-    if (isSafari()) {
+    if (isWebkit()) {
       namejaAttrs.textLength = ((33.8667 * 5 / namejalen) * 1.5) + "px";
     } else {
       namejaAttrs.textLength = (33.8667 * 5) + "px";
