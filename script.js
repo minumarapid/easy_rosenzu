@@ -1,4 +1,4 @@
-// easy_rosenzu/script.js - v0.4.4
+// easy_rosenzu/script.js - v0.04.05
 // 簡易路線図ジェネレータは、駅の名前や種別を入力することで、snapsvgを使用して路線図を自動で描画するサイトです。
 function main() {
   const data = getdatafromtextarea();
@@ -895,7 +895,7 @@ async function getdatafromurl(q) {
 window.onload = function onload(){
   addevent();
   
-  console.log("easy_rosenzu/script.js v0.4.4 loaded successfully."); 
+  console.log("easy_rosenzu/script.js v0.04.05 loaded successfully."); 
 
   const url = new URL(window.location.href);
   const q = url.searchParams.get("q")

@@ -106,15 +106,22 @@ function saveBrowser(rawFileName){
   const a = document.getElementById("dataSaveBtn");
   a.removeAttribute('href');
   a.removeAttribute('download');
-  a.onclick = (() =>{
-    const saveName = `save_${fileName}`
+  a.onclick = (() => {
+    const saveName = `save_${fileName}`;
     const arr = (localStorage.saveDataArr) ? localStorage.saveDataArr.split(",") : [];
-    if(!localStorage.saveDataArr || !arr.includes(fileName)){
-      arr.push(fileName)
+
+    if (arr.includes(fileName)) {
+      if (!confirm("すでに同じ名前のデータがあります。上書きしますか？")){
+        alert("取り消しました。");
+        return;
+      }
+    } else {
+      arr.push(fileName);
       localStorage.saveDataArr = arr.join(",");
     }
+
     localStorage.setItem(saveName, exportJson());
-    alert("保存しました。")
+    alert("保存しました。");
   });
 }
 
@@ -128,7 +135,6 @@ function downloadSvg(fileName) {
   a.href = svgUrl;
   a.download = `${fileName}.svg`;
   a.onclick = null;
-  URL.revokeObjectURL(svgUrl);
 }
 
 function downloadJson(fileName) {
@@ -139,7 +145,6 @@ function downloadJson(fileName) {
   a.href = Url;
   a.download = `${fileName}.json`;
   a.onclick = null;
-  URL.revokeObjectURL(Url);
 }
 
 function downloadPng(fileName) {
