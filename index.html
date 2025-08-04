@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ja">
-  <head>
+  <head prefix="og: http://ogp.me/ns#">
     <script type="application/ld+json">
     {
       "@context" : "https://schema.org",
@@ -12,14 +12,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="完全無料・広告なしの路線図メーカー。多言語・乗換対応で誰でも簡単に作成。架空鉄道にもぴったり。もちろんスマホからもすべての機能が使えます。">
-    <meta name="author" content="o38_minumarapid">
+    <meta name="author" content="tana">
     <meta name="keywords" content="路線図ジェネレータ,路線図メーカー,架空鉄道,鉄道,電車">
-    
+    <meta name="twitter:card" content="summary_large_image">
     <meta property="og:title" content="簡易路線図ジェネレータ">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://easy-rosenzu.pages.dev">
+    <meta property="og:url" content="https://rosenzu.o38.me/">
     <meta property="og:site_name" content="簡易路線図ジェネレータ">
     <meta property="og:description" content="完全無料・広告なしの路線図メーカー。多言語・乗換対応で誰でも簡単に作成。架空鉄道にもぴったり。もちろんスマホからもすべての機能が使えます。">
+    <meta property="og:image" content="https://rosenzu.o38.me/image/ogp.png">
     <meta property="og:locale" content="ja-jp">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="icon" href="/image/favicon.ico">
@@ -95,7 +96,7 @@
     <div class="container text-center">
       <div class="row">
         <div class="col-sm-7">
-          <div class="sticky-top mb-3 z-0">
+          <div class="sticky-top mb-3 z-0" style="top: 5rem;">
             <div id="container" class=" bg-white p-2 my-1 overflow-x-scroll rounded">ここに路線図が表示されます</div>
             <p id="error" class="text-danger"></p>
           </div>
